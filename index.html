@@ -482,6 +482,31 @@
         });
 
 
+        // --- Логика для кнопки музыки (исправленная версия) ---
+        const music = document.getElementById('background-music');
+        const playBtn = document.getElementById('play-music-btn');
+
+        playBtn.addEventListener('click', async () => {
+            // Современные браузеры требуют, чтобы воспроизведение было инициировано
+            // пользователем. Метод play() возвращает Promise, который нужно обработать.
+            try {
+                if (music.paused) {
+                    await music.play();
+                    playBtn.innerHTML = '<i data-lucide="pause-circle"></i> Выключить Блюз';
+                } else {
+                    music.pause();
+                    playBtn.innerHTML = '<i data-lucide="play-circle"></i> Включить Блюз';
+                }
+            } catch (err) {
+                console.error('Ошибка воспроизведения аудио:', err);
+                // Можно добавить уведомление для пользователя, если нужно
+            } finally {
+                // Обновляем иконки после изменения HTML кнопки
+                lucide.createIcons();
+            }
+        });
+
+
         // --- Gemini API ---
         const apiKey = ""; // API-ключ будет предоставлен средой выполнения
         
