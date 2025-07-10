@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ока-Тур: Приключение Трех Друзей с ИИ</title>
+    
+    <!-- Подключение Tailwind CSS для стилизации -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Подключение шрифта Inter из Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+
+    <!-- Иконки -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Кастомные стили для улучшения эстетики */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        /* Стиль для заголовков */
+        .montserrat-heading {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Градиентный текст */
+        .gradient-text {
+            background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+        
+        /* Градиентная кнопка */
+        .gemini-button {
+             background-image: linear-gradient(to right, #38bdf8 0%, #c084fc 100%);
+             transition: all 0.3s ease;
+        }
+        .gemini-button:hover {
+            box-shadow: 0 0 20px #c084fc80;
+        }
+
+        /* Стили для 3D сцены */
+        #three-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.2;
+        }
+        
+        /* Фон для Hero секции */
+        .hero-bg {
+            background-image: url('https://placehold.co/1920x1080/0a0a0a/333333?text=Нуарный+велосипед');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* Класс для анимации появления */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Стили для карточек */
+        .glassmorphism-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .glassmorphism-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Стили для модальных окон */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: #1e293b; /* Чуть светлее фон */
+            border-radius: 1rem;
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.visible .modal-content {
+            transform: scale(1);
+        }
+
+        /* Спиннер загрузки */
+        .loader {
+            border: 4px solid #f3f3f330;
+            border-top: 4px solid #38bdf8;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Аудиоплеер для фоновой музыки -->
+    <audio id="background-music" loop>
+        <source src="https://files.catbox.moe/rpvne7.mp3" type="audio/mpeg">
+        Ваш браузер не поддерживает аудиоэлементы.
+    </audio>
+
+    <!-- 3D Canvas для анимации -->
+    <div id="three-canvas-container" class="fixed top-0 left-0 w-full h-full z-0">
+        <canvas id="three-canvas"></canvas>
+    </div>
+
+    <div class="relative z-10">
+        <!-- Секция Hero: Заглавная -->
+        <header class="h-screen min-h-[700px] flex flex-col items-center justify-center text-center p-4 relative overflow-hidden hero-bg">
+            <div class="absolute inset-0 bg-black/70 z-10"></div>
+            <div class="relative z-20 flex flex-col items-center">
+                <div class="mb-4 reveal">
+                    <span class="inline-block bg-sky-500/10 text-sky-400 text-sm font-medium px-4 py-1 rounded-full">
+                        12 Июля, Суббота
+                    </span>
+                </div>
+                <h1 class="montserrat-heading text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-tighter reveal" style="transition-delay: 0.2s;">
+                    <span class="gradient-text">Ока-Тур</span>
+                </h1>
+                <p class="mt-6 text-lg md:text-xl max-w-2xl text-slate-300 reveal" style="transition-delay: 0.4s;">
+                    Эпическое велопутешествие трех друзей вдоль живописных берегов Оки с триумфальным возвращением на базу!
+                </p>
+                <div class="mt-10 flex flex-col sm:flex-row gap-4">
+                    <div class="reveal" style="transition-delay: 0.5s;">
+                         <button id="play-music-btn" class="w-full bg-emerald-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-emerald-600 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2">
+                             <i data-lucide="play-circle"></i>
+                             Включить Блюз
+                         </button>
+                    </div>
+                    <div class="reveal" style="transition-delay: 0.6s;">
+                        <a href="#route" class="w-full bg-sky-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-sky-600 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-sky-500/20 flex items-center justify-center gap-2">
+                            <i data-lucide="map"></i>
+                            Наш Маршрут
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="absolute bottom-10 z-20 animate-bounce">
+                <i data-lucide="arrow-down" class="w-8 h-8 text-white/50"></i>
+            </div>
+        </header>
+
+        <main class="bg-black/80 backdrop-blur-sm">
+            <!-- Секция: Команда -->
+            <section id="team" class="py-20 sm:py-32">
+                <div class="container mx-auto px-4">
+                    <div class="text-center mb-16 reveal">
+                        <h2 class="text-4xl md:text-5xl font-bold montserrat-heading">Наша <span class="gradient-text">Команда</span></h2>
+                        <p class="mt-4 text-lg text-slate-400 max-w-xl mx-auto">Три товарища, одна цель: покорить горизонт.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+                        <div class="glassmorphism-card p-8 text-center reveal">
+                            <img src="https://placehold.co/150x150/0a0a0a/c084fc?text=Ю" alt="Фото Юры" class="w-32 h-32 rounded-full mx-auto mb-6 border-4 border-purple-500/50 shadow-lg">
+                            <h3 class="text-2xl font-bold text-white">Юра "Скорость"</h3>
+                            <p class="mt-2 text-purple-300 font-medium">Главный по скорости</p>
+                            <p class="mt-4 text-slate-400">Задает темп и всегда мчится впереди, оставляя ветер позади.</p>
+                        </div>
+                        <div class="glassmorphism-card p-8 text-center reveal" style="transition-delay: 0.2s;">
+                            <img src="https://placehold.co/150x150/0a0a0a/818cf8?text=С" alt="Фото Сергея" class="w-32 h-32 rounded-full mx-auto mb-6 border-4 border-indigo-500/50 shadow-lg">
+                            <h3 class="text-2xl font-bold text-white">Сергей "Повелитель насоса"</h3>
+                            <p class="mt-2 text-indigo-300 font-medium">Технический гуру</p>
+                            <p class="mt-4 text-slate-400">Знает всё о давлении в шинах и может починить что угодно.</p>
+                        </div>
+                        <div class="glassmorphism-card p-8 text-center reveal" style="transition-delay: 0.4s;">
+                            <img src="https://placehold.co/150x150/0a0a0a/38bdf8?text=А-К" alt="Фото Архитектора-кулинара" class="w-32 h-32 rounded-full mx-auto mb-6 border-4 border-sky-500/50 shadow-lg">
+                            <h3 class="text-2xl font-bold text-white">Архитектор-кулинар</h3>
+                            <p class="mt-2 text-sky-300 font-medium">Маэстро привалов</p>
+                            <p class="mt-4 text-slate-400">Планирует не только маршрут, но и самые вкусные остановки.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Секция: Маршрут -->
+            <section id="route" class="py-20 sm:py-32 bg-slate-900/50">
+                <div class="container mx-auto px-4">
+                    <div class="text-center mb-16 reveal">
+                        <h2 class="text-4xl md:text-5xl font-bold montserrat-heading">Карта <span class="gradient-text">Приключения</span></h2>
+                        <p class="mt-4 text-lg text-slate-400 max-w-xl mx-auto">Наш путь от рассвета до заката. Нажмите на точку, чтобы узнать больше.</p>
+                    </div>
+                    <div class="relative max-w-6xl mx-auto reveal">
+                        <!-- SVG Карта -->
+                        <svg viewBox="0 0 1200 350" class="w-full h-auto">
+                            <path d="M50,150 C150,80 250,220 400,150 S500,50 650,100 C750,250 850,200 1000,150 S1150,100 1150,150 C1100,300 800,320 400,250 C200,200 100,180 50,150" stroke="url(#line-gradient)" stroke-width="4" fill="none" stroke-dasharray="10 5" />
+                            <defs>
+                                <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#38bdf8" />
+                                    <stop offset="100%" style="stop-color:#c084fc" />
+                                </linearGradient>
+                            </defs>
+                            
+                            <!-- Точки на карте -->
+                            <g class="map-point cursor-pointer" transform="translate(50, 150)" data-title="Старт и Финиш: Дом Богдана в Арнеево" data-description="Здесь начинается и заканчивается наше приключение! Утром — кофе, вечером — шашлыки, сауна и пиво. Идеальная база для героев." data-img="https://placehold.co/600x400/1a202c/e2e8f0?text=Дом+Богдана">
+                                <circle cx="0" cy="0" r="12" fill="#10b981" /><circle cx="0" cy="0" r="18" fill="#10b981" class="opacity-30 animate-ping" /><text x="-22" y="5" text-anchor="end" fill="#e2e8f0" class="font-semibold hidden sm:block">Старт/Финиш</text>
+                            </g>
+                             <g class="map-point cursor-pointer" transform="translate(275, 145)" data-title="Костино" data-description="Первый серьезный подъем и лесные тропы. Здесь проверяется наша выносливость и открываются первые панорамные виды." data-img="https://placehold.co/600x400/1a202c/e2e8f0?text=Лес+у+Костино">
+                                <circle cx="0" cy="0" r="12" fill="#5b21b6" /><text x="0" y="-25" fill="#e2e8f0" text-anchor="middle" class="font-semibold hidden sm:block">Костино</text>
+                            </g>
+                             <g class="map-point cursor-pointer" transform="translate(500, 88)" data-title="Пущинская Усадьба" data-description="Заглянем к старинной усадьбе Пущиных, где история витает в воздухе среди вековых деревьев." data-img="https://placehold.co/600x400/1a202c/e2e8f0?text=Усадьба+Пущино">
+                                <circle cx="0" cy="0" r="12" fill="#7c3aed" /><text x="0" y="-25" fill="#e2e8f0" text-anchor="middle" class="font-semibold hidden sm:block">Усадьба</text>
+                            </g>
+                            <g class="map-point cursor-pointer" transform="translate(680, 120)" data-title="Пущинский водопад" data-description="Скрытая жемчужина маршрута. Небольшой, но очень живописный водопад, идеальное место для фото-паузы." data-img="https://placehold.co/600x400/1a202c/e2e8f0?text=Водопад">
+                                <circle cx="0" cy="0" r="12" fill="#a78bfa" /><text x="0" y="35" fill="#e2e8f0" text-anchor="middle" class="font-semibold hidden sm:block">Водопад</text>
+                            </g>
+                             <g class="map-point cursor-pointer" transform="translate(875, 200)" data-title="Смотровая площадка" data-description="С карстовых обрывов открывается захватывающий дух вид на долину реки Оки. Лучшие панорамные снимки гарантированы." data-img="https://placehold.co/600x400/1a202c/e2e8f0?text=Смотровая">
+                                <circle cx="0" cy="0" r="12" fill="#c084fc" /><text x="0" y="-25" fill="#e2e8f0" text-anchor="middle" class="font-semibold hidden sm:block">Смотровая</text>
+                            </g>
+                            <g class="map-point cursor-pointer" transform="translate(1150, 150)" data-title="Пляж в Пущино" data-description="Разворотная точка маршрута! Отдыхаем на песчаном пляже, купаемся в Оке и готовимся к обратному пути." data-img="https://placehold.co/600x400/1a202c/e2e8f0?text=Пляж+у+Оки">
+                                <circle cx="0" cy="0" r="12" fill="#f472b6" /><text x="0" y="-25" fill="#e2e8f0" text-anchor="middle" class="font-semibold hidden sm:block">Пляж</text>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+            </section>
+
+            <!-- РАЗДЕЛ: Ключевые точки -->
+            <section id="pois" class="py-20 sm:py-32">
+                <div class="container mx-auto px-4">
+                    <div class="text-center mb-16 reveal">
+                        <h2 class="text-4xl md:text-5xl font-bold montserrat-heading">Ключевые <span class="gradient-text">Точки</span></h2>
+                        <p class="mt-4 text-lg text-slate-400 max-w-xl mx-auto">Места, которые нельзя пропустить.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div class="reveal group relative overflow-hidden rounded-2xl">
+                            <img src="https://placehold.co/800x600/1a202c/e2e8f0?text=Усадьба+Пущино" alt="Усадьба Пущино" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 p-8">
+                                <h3 class="text-3xl font-bold text-white">Усадьба Пущино</h3>
+                                <p class="text-slate-300 mt-2">Прикосновение к истории в тени старинного парка.</p>
+                            </div>
+                        </div>
+                        <div class="reveal group relative overflow-hidden rounded-2xl" style="transition-delay: 0.2s;">
+                            <img src="https://placehold.co/800x600/1a202c/e2e8f0?text=Пущинский+водопад" alt="Пущинский водопад" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 p-8">
+                                <h3 class="text-3xl font-bold text-white">Пущинский водопад</h3>
+                                <p class="text-slate-300 mt-2">Оазис прохлады и звуков падающей воды.</p>
+                            </div>
+                        </div>
+                        <div class="reveal group relative overflow-hidden rounded-2xl" style="transition-delay: 0.4s;">
+                            <img src="https://placehold.co/800x600/1a202c/e2e8f0?text=Смотровая+площадка" alt="Смотровая площадка" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 p-8">
+                                <h3 class="text-3xl font-bold text-white">Смотровая площадка</h3>
+                                <p class="text-slate-300 mt-2">Панорамный вид на Оку, от которого захватывает дух.</p>
+                            </div>
+                        </div>
+                        <div class="reveal group relative overflow-hidden rounded-2xl" style="transition-delay: 0.6s;">
+                            <img src="https://placehold.co/800x600/1a202c/e2e8f0?text=Пляж+у+Оки" alt="Пляж в Пущино" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 p-8">
+                                <h3 class="text-3xl font-bold text-white">Пляж и пристань</h3>
+                                <p class="text-slate-300 mt-2">Идеальное место для отдыха у воды перед обратной дорогой.</p>
+                            </div>
+                        </div>
+                        <div class="reveal group relative overflow-hidden rounded-2xl lg:col-span-2" style="transition-delay: 0.8s;">
+                            <img src="https://placehold.co/800x600/1a202c/e2e8f0?text=Шашлыки+и+сауна" alt="Афтепати в Арнеево" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 p-8">
+                                <h3 class="text-3xl font-bold text-white">Дом Богдана: Афтепати</h3>
+                                <p class="text-slate-300 mt-2">Заслуженный отдых: шашлыки, сауна и ледяное пиво!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Секция: Галерея -->
+            <section id="gallery" class="py-20 sm:py-32">
+                <div class="container mx-auto px-4">
+                    <div class="text-center mb-16 reveal">
+                        <h2 class="text-4xl md:text-5xl font-bold montserrat-heading">Дух <span class="gradient-text">Путешествия</span></h2>
+                        <p class="mt-4 text-lg text-slate-400 max-w-xl mx-auto">Моменты, которые мы сохраним навсегда.</p>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="grid gap-4">
+                            <div class="reveal"><img class="h-auto max-w-full rounded-lg transition-transform duration-300 hover:scale-105" src="https://placehold.co/600x800/1a202c/e2e8f0?text=Фото+1"></div>
+                            <div class="reveal"><img class="h-auto max-w-full rounded-lg transition-transform duration-300 hover:scale-105" src="https://placehold.co/600x600/1a202c/e2e8f0?text=Фото+2"></div>
+                        </div>
+                        <div class="grid gap-4">
+                            <div class="reveal"><img class="h-auto max-w-full rounded-lg transition-transform duration-300 hover:scale-105" src="https://placehold.co/600x700/1a202c/e2e8f0?text=Фото+3"></div>
+                            <div class="reveal"><img class="h-auto max-w-full rounded-lg transition-transform duration-300 hover:scale-105" src="https://placehold.co/600x900/1a202c/e2e8f0?text=Фото+4"></div>
+                        </div>
+                        <div class="grid gap-4">
+                            <div class="reveal"><img class="h-auto max-w-full rounded-lg transition-transform duration-300 hover:scale-105" src="https://placehold.co/600x800/1a202c/e2e8f0?text=Фото+5"></div>
+                            <div class="reveal"><img class="h-auto max-w-full rounded-lg transition-transform duration-300 hover:scale-105" src="https://placehold.co/600x600/1a202c/e2e8f0?text=Фото+6"></div>
+                        </div>
+                        <div class="grid gap-4">
+                            <div class="reveal"><img class="h-auto max-w-full rounded-lg transition-transform duration-300 hover:scale-105" src="https://placehold.co/600x700/1a202c/e2e8f0?text=Фото+7"></div>
+                            <div class="reveal"><img class="h-auto max-w-full rounded-lg transition-transform duration-300 hover:scale-105" src="https://placehold.co/600x900/1a202c/e2e8f0?text=Фото+8"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Футер -->
+        <footer class="py-12 bg-black/50">
+            <div class="container mx-auto px-4 text-center text-slate-400">
+                 <div class="mb-8">
+                    <button id="generate-report-btn" class="gemini-button text-white font-bold py-3 px-8 rounded-full text-lg transform hover:scale-105 shadow-lg shadow-purple-500/20 flex items-center gap-2 mx-auto">
+                        ✨ Создать отчет о поездке с Gemini
+                    </button>
+                </div>
+                <p class="montserrat-heading text-lg font-bold gradient-text">Ока-Тур 2024</p>
+                <p class="mt-2">Создано с любовью к приключениям и коду.</p>
+                <div class="flex justify-center gap-6 mt-6">
+                    <a href="#" class="hover:text-white transition-colors"><i data-lucide="instagram"></i></a>
+                    <a href="#" class="hover:text-white transition-colors"><i data-lucide="send"></i></a>
+                    <a href="#" class="hover:text-white transition-colors"><i data-lucide="youtube"></i></a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Модальное окно для точек маршрута -->
+    <div id="route-modal" class="modal-overlay">
+        <div class="modal-content relative">
+            <button id="close-modal" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors z-10">
+                <i data-lucide="x" class="w-8 h-8"></i>
+            </button>
+            <img id="modal-img" src="" alt="Фото локации" class="w-full h-64 object-cover rounded-lg mb-6">
+            <h3 id="modal-title" class="text-3xl font-bold montserrat-heading gradient-text mb-2"></h3>
+            <p id="modal-description" class="text-slate-300 mb-6"></p>
+
+            <!-- Gemini Feature: Storyteller -->
+            <div id="gemini-story-container">
+                <button id="generate-story-btn" class="gemini-button text-white font-bold py-2 px-6 rounded-full text-base flex items-center gap-2 w-full justify-center">
+                    ✨ Рассказать историю этого места
+                </button>
+                <div id="story-loader" class="hidden loader"></div>
+                <div id="story-output" class="mt-4 text-slate-300 bg-slate-800/50 p-4 rounded-lg whitespace-pre-wrap"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно для отчета о поездке -->
+    <div id="report-modal" class="modal-overlay">
+        <div class="modal-content relative">
+            <button id="close-report-modal" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors z-10">
+                <i data-lucide="x" class="w-8 h-8"></i>
+            </button>
+            <h3 class="text-3xl font-bold montserrat-heading gradient-text mb-4">✨ Отчет о поездке</h3>
+            <div id="report-loader" class="loader"></div>
+            <div id="report-output" class="text-slate-300 bg-slate-800/50 p-4 rounded-lg whitespace-pre-wrap max-h-[60vh] overflow-y-auto"></div>
+        </div>
+    </div>
+
+
+    <!-- Подключение Three.js для 3D графики -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        // Инициализация иконок
+        lucide.createIcons();
+
+        // --- Анимация появления элементов при скролле ---
+        const revealElements = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        revealElements.forEach(el => {
+            observer.observe(el);
+        });
+
+        // --- Логика модальных окон ---
+        const routeModal = document.getElementById('route-modal');
+        const closeRouteModalBtn = document.getElementById('close-modal');
+        const mapPoints = document.querySelectorAll('.map-point');
+        
+        const reportModal = document.getElementById('report-modal');
+        const generateReportBtn = document.getElementById('generate-report-btn');
+        const closeReportModalBtn = document.getElementById('close-report-modal');
+
+        const modalTitle = document.getElementById('modal-title');
+        const modalDescription = document.getElementById('modal-description');
+        const modalImg = document.getElementById('modal-img');
+        
+        // --- Gemini: Элементы для истории ---
+        const generateStoryBtn = document.getElementById('generate-story-btn');
+        const storyLoader = document.getElementById('story-loader');
+        const storyOutput = document.getElementById('story-output');
+        let currentLocatonTitle = '';
+
+        mapPoints.forEach(point => {
+            point.addEventListener('click', () => {
+                currentLocatonTitle = point.dataset.title;
+                modalTitle.textContent = currentLocatonTitle;
+                modalDescription.textContent = point.dataset.description;
+                modalImg.src = point.dataset.img;
+                
+                // Сброс состояния Gemini
+                storyOutput.innerHTML = '';
+                storyOutput.classList.add('hidden');
+                generateStoryBtn.classList.remove('hidden');
+
+                routeModal.classList.add('visible');
+            });
+        });
+
+        const closeRouteModal = () => routeModal.classList.remove('visible');
+        closeRouteModalBtn.addEventListener('click', closeRouteModal);
+        routeModal.addEventListener('click', (e) => {
+            if (e.target === routeModal) closeRouteModal();
+        });
+        
+        const closeReportModal = () => reportModal.classList.remove('visible');
+        generateReportBtn.addEventListener('click', () => {
+            reportModal.classList.add('visible');
+            generateTripReport();
+        });
+        closeReportModalBtn.addEventListener('click', closeReportModal);
+        reportModal.addEventListener('click', (e) => {
+            if (e.target === reportModal) closeReportModal();
+        });
+
+
+        // --- Gemini API ---
+        const apiKey = ""; // API-ключ будет предоставлен средой выполнения
+        
+        /**
+         * ✨ Функция для генерации истории о месте
+         */
+        async function generateLocationStory() {
+            generateStoryBtn.classList.add('hidden');
+            storyLoader.classList.remove('hidden');
+            storyOutput.innerHTML = '';
+            storyOutput.classList.add('hidden');
+
+            const prompt = `Ты — велосипедист-путешественник с поэтической душой. Ты только что прибыл в место под названием "${currentLocatonTitle}" на берегу реки Ока. Напиши короткий, яркий и увлекательный художественный рассказ или стихотворение (на твой выбор) об этом месте и твоих ощущениях. Текст должен быть на русском языке.`;
+            
+            try {
+                const payload = {
+                    contents: [{ role: "user", parts: [{ text: prompt }] }]
+                };
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates[0].content.parts[0].text) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    storyOutput.textContent = text;
+                } else {
+                    storyOutput.textContent = 'Не удалось получить историю от Gemini. Попробуйте еще раз.';
+                }
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                storyOutput.textContent = 'Произошла ошибка при обращении к ИИ. Пожалуйста, проверьте консоль.';
+            } finally {
+                storyLoader.classList.add('hidden');
+                storyOutput.classList.remove('hidden');
+            }
+        }
+        
+        generateStoryBtn.addEventListener('click', generateLocationStory);
+
+        /**
+         * ✨ Функция для генерации отчета о поездке
+         */
+        async function generateTripReport() {
+            const reportLoader = document.getElementById('report-loader');
+            const reportOutput = document.getElementById('report-output');
+            
+            reportLoader.classList.remove('hidden');
+            reportOutput.innerHTML = '';
+            
+            const prompt = `Напиши короткий, восторженный пост для блога или социальной сети о велосипедной поездке трех друзей (Юра 'Скорость', Сергей 'Повелитель насоса', и Архитектор-кулинар) вдоль реки Ока. Их маршрут был кольцевым: они стартовали от дома Богдана в Арнеево, посетили Костино, Усадьбу Пущино, Пущинский водопад, смотровую площадку, отдохнули на пляже в Пущино и триумфально вернулись обратно в Арнеево на базу к Богдану на шашлыки, в сауну и с пивом. Обязательно опиши эпичное завершение дня, красоту природы, дух товарищества и незабываемые впечатления. Добавь несколько подходящих эмодзи и хэштегов. Текст должен быть на русском языке.`;
+
+            try {
+                const payload = {
+                    contents: [{ role: "user", parts: [{ text: prompt }] }]
+                };
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+
+                if (result.candidates && result.candidates[0].content.parts[0].text) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    reportOutput.textContent = text;
+                } else {
+                    reportOutput.textContent = 'Не удалось создать отчет. Попробуйте еще раз.';
+                }
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                reportOutput.textContent = 'Произошла ошибка при обращении к ИИ. Пожалуйста, проверьте консоль.';
+            } finally {
+                reportLoader.classList.add('hidden');
+            }
+        }
+
+
+        // --- 3D Анимация волн на фоне ---
+        let scene, camera, renderer, wavePlane;
+        let clock = new THREE.Clock();
+
+        function initThree() {
+            const container = document.getElementById('three-canvas-container');
+            if (!container) return;
+
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 1.5;
+
+            renderer = new THREE.WebGLRenderer({ 
+                canvas: document.getElementById('three-canvas'),
+                alpha: true
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+
+            const geometry = new THREE.PlaneGeometry(10, 10, 50, 50);
+            const material = new THREE.ShaderMaterial({
+                uniforms: {
+                    u_time: { type: 'f', value: 0.0 },
+                    u_colorA: { type: 'v3', value: new THREE.Color('#0a0a0a') },
+                    u_colorB: { type: 'v3', value: new THREE.Color('#0f2a4d') }
+                },
+                vertexShader: `
+                    uniform float u_time;
+                    varying vec2 vUv;
+                    float noise(vec2 st) {
+                        return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
+                    }
+                    void main() {
+                        vUv = uv;
+                        vec3 pos = position;
+                        float noise_freq = 2.5;
+                        float noise_amp = 0.15;
+                        pos.z += noise(vec2(pos.x*noise_freq + u_time, pos.y*noise_freq)) * noise_amp;
+                        pos.z += sin(pos.x * 2.0 + u_time * 1.5) * 0.1;
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    uniform vec3 u_colorA;
+                    uniform vec3 u_colorB;
+                    varying vec2 vUv;
+                    void main() {
+                        gl_FragColor = vec4(mix(u_colorA, u_colorB, vUv.y * 2.0), 1.0);
+                    }
+                `
+            });
+
+            wavePlane = new THREE.Mesh(geometry, material);
+            wavePlane.rotation.x = -Math.PI / 2.5;
+            wavePlane.position.y = -1;
+            scene.add(wavePlane);
+
+            window.addEventListener('resize', onWindowResize, false);
+            animate();
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if(wavePlane && wavePlane.material && wavePlane.material.uniforms && wavePlane.material.uniforms.u_time) {
+               wavePlane.material.uniforms.u_time.value = clock.getElapsedTime();
+            }
+            renderer.render(scene, camera);
+        }
+
+        initThree();
+    </script>
+</body>
+</html>
