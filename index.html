@@ -61,7 +61,7 @@
         
         /* Фон для Hero секции */
         .hero-bg {
-            background-image: url('https://lh3.googleusercontent.com/acXDFVKpxb2CeFokP_6lL34cW93linAiKRG49yVn7aEYWHiWxrECcdP8hgBSzyL1jtT_tiXTFJo5_9n21pzlxj6Ik1GtWJRQW4EDzg=s1050');
+            background-image: url('https://i.imgur.com/V7rdQN4.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -149,6 +149,36 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        /* Стили для интерактивной карты */
+        #mapCanvas {
+            border-radius: 1rem;
+            background: #1e293b;
+            cursor: move;
+            width: 100%;
+            height: auto;
+        }
+        
+        .stat-counter {
+            font-size: 2.5rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .point-marker {
+            background: linear-gradient(135deg, #38bdf8, #c084fc);
+            border: 3px solid white;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -235,40 +265,80 @@
             <section id="route" class="py-20 sm:py-32 bg-slate-900/50">
                 <div class="container mx-auto px-4">
                     <div class="text-center mb-16 reveal">
-                        <h2 class="text-4xl md:text-5xl font-bold montserrat-heading">Карта <span class="gradient-text">Приключения</span></h2>
-                        <p class="mt-4 text-lg text-slate-400 max-w-xl mx-auto">Наш путь от рассвета до заката. Нажмите на точку, чтобы узнать больше.</p>
+                        <h2 class="text-4xl md:text-5xl font-bold montserrat-heading">Интерактивная карта <span class="gradient-text">Маршрута</span></h2>
+                        <p class="mt-4 text-lg text-slate-400 max-w-xl mx-auto">42 км велосипедного приключения вдоль берегов Оки. Взаимодействуйте с картой!</p>
                     </div>
-                    <div class="relative max-w-6xl mx-auto reveal">
-                        <!-- SVG Карта -->
-                        <svg viewBox="0 0 1200 350" class="w-full h-auto">
-                            <path d="M50,150 C150,80 250,220 400,150 S500,50 650,100 C750,250 850,200 1000,150 S1150,100 1150,150 C1100,300 800,320 400,250 C200,200 100,180 50,150" stroke="url(#line-gradient)" stroke-width="4" fill="none" stroke-dasharray="10 5" />
-                            <defs>
-                                <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                    <stop offset="0%" style="stop-color:#38bdf8" />
-                                    <stop offset="100%" style="stop-color:#c084fc" />
-                                </linearGradient>
-                            </defs>
-                            
-                            <!-- Точки на карте -->
-                            <g class="map-point cursor-pointer" transform="translate(50, 150)" data-title="Старт и Финиш: Дом Богдана в Арнеево" data-description="Здесь начинается и заканчивается наше приключение! Утром — кофе, вечером — шашлыки, сауна и пиво. Идеальная база для героев." data-img="https://imgur.com/7Rp4Thb.jpg">
-                                <circle cx="0" cy="0" r="12" fill="#10b981" /><circle cx="0" cy="0" r="18" fill="#10b981" class="opacity-30 animate-ping" /><text x="-22" y="5" text-anchor="end" fill="#e2e8f0" class="font-semibold hidden sm:block">Старт/Финиш</text>
-                            </g>
-                             <g class="map-point cursor-pointer" transform="translate(275, 145)" data-title="Костино" data-description="Первый серьезный подъем и лесные тропы. Здесь проверяется наша выносливость и открываются первые панорамные виды." data-img="https://media.izi.travel/e07e4a31-ccfe-4a85-a39c-3bc609800ab9/d72d41c3-3f75-44dc-a866-4713ca076495_800x600.jpg">
-                                <circle cx="0" cy="0" r="12" fill="#5b21b6" /><text x="0" y="-25" fill="#e2e8f0" text-anchor="middle" class="font-semibold hidden sm:block">Костино</text>
-                            </g>
-                             <g class="map-point cursor-pointer" transform="translate(500, 88)" data-title="Пущинская Усадьба" data-description="Заглянем к старинной усадьбе Пущиных, где история витает в воздухе среди вековых деревьев." data-img="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Pushino_Oka_Manor.jpg/500px-Pushino_Oka_Manor.jpg">
-                                <circle cx="0" cy="0" r="12" fill="#7c3aed" /><text x="0" y="-25" fill="#e2e8f0" text-anchor="middle" class="font-semibold hidden sm:block">Усадьба</text>
-                            </g>
-                            <g class="map-point cursor-pointer" transform="translate(680, 120)" data-title="Пущинский водопад" data-description="Скрытая жемчужина маршрута. Небольшой, но очень живописный водопад, идеальное место для фото-паузы." data-img="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA4xIWHuUdjTFyf9n12y8exKwQpSuN_xu0tw&s">
-                                <circle cx="0" cy="0" r="12" fill="#a78bfa" /><text x="0" y="35" fill="#e2e8f0" text-anchor="middle" class="font-semibold hidden sm:block">Водопад</text>
-                            </g>
-                             <g class="map-point cursor-pointer" transform="translate(875, 200)" data-title="Смотровая площадка" data-description="С карстовых обрывов открывается захватывающий дух вид на долину реки Оки. Лучшие панорамные снимки гарантированы." data-img="https://media.kupo.la/thumbor/unsafe/preset/orig/images/2018/9/11/1536655687-YcGRPwpMMsA.jpg">
-                                <circle cx="0" cy="0" r="12" fill="#c084fc" /><text x="0" y="-25" fill="#e2e8f0" text-anchor="middle" class="font-semibold hidden sm:block">Смотровая</text>
-                            </g>
-                            <g class="map-point cursor-pointer" transform="translate(1150, 150)" data-title="Пляж в Пущино" data-description="Разворотная точка маршрута! Отдыхаем на песчаном пляже, купаемся в Оке и готовимся к обратному пути." data-img="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/11/8d/6c/79/caption.jpg?w=1200&h=1200&s=1">
-                                <circle cx="0" cy="0" r="12" fill="#f472b6" /><text x="0" y="-25" fill="#e2e8f0" text-anchor="middle" class="font-semibold hidden sm:block">Пляж</text>
-                            </g>
-                        </svg>
+                    
+                    <!-- Статистика маршрута -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 reveal">
+                        <div class="glassmorphism-card text-center p-4">
+                            <div class="text-slate-400 text-sm mb-2">Расстояние</div>
+                            <div id="distance-stat" class="stat-counter gradient-text">0</div>
+                            <div class="text-slate-400 text-xs">км</div>
+                        </div>
+                        <div class="glassmorphism-card text-center p-4">
+                            <div class="text-slate-400 text-sm mb-2">Общий подъём</div>
+                            <div id="elevation-gain-stat" class="stat-counter gradient-text">0</div>
+                            <div class="text-slate-400 text-xs">м</div>
+                        </div>
+                        <div class="glassmorphism-card text-center p-4">
+                            <div class="text-slate-400 text-sm mb-2">Макс. высота</div>
+                            <div id="max-elevation-stat" class="stat-counter gradient-text">0</div>
+                            <div class="text-slate-400 text-xs">м</div>
+                        </div>
+                        <div class="glassmorphism-card text-center p-4">
+                            <div class="text-slate-400 text-sm mb-2">Время в пути</div>
+                            <div id="time-stat" class="stat-counter gradient-text">2:50</div>
+                            <div class="text-slate-400 text-xs">часов</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Canvas карта -->
+                    <div class="glassmorphism-card p-6 mb-8 reveal">
+                        <div class="relative">
+                            <canvas id="mapCanvas" width="800" height="600"></canvas>
+                        </div>
+                        <div class="mt-4 flex flex-wrap gap-2 justify-center">
+                            <button id="zoom-in" class="px-4 py-2 bg-sky-500 text-white rounded-lg hover:bg-sky-600 transition-colors flex items-center gap-2">
+                                <span>➕</span> Увеличить
+                            </button>
+                            <button id="zoom-out" class="px-4 py-2 bg-sky-500 text-white rounded-lg hover:bg-sky-600 transition-colors flex items-center gap-2">
+                                <span>➖</span> Уменьшить
+                            </button>
+                            <button id="center-map" class="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors flex items-center gap-2">
+                                <span>🎯</span> По центру
+                            </button>
+                            <button id="toggle-style" class="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors flex items-center gap-2">
+                                <span>🌙</span> Тёмная
+                            </button>
+                            <button id="toggle-satellite" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center gap-2">
+                                <span>🛰️</span> Спутник
+                            </button>
+                            <button id="animate-route" class="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors flex items-center gap-2">
+                                <span>▶</span> Анимация
+                            </button>
+                            <button id="download-map" class="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors flex items-center gap-2">
+                                <span>💾</span> Скачать
+                            </button>
+                        </div>
+                        <p class="mt-3 text-sm text-slate-400 text-center">
+                            💡 Перетаскивайте карту мышью или пальцем. Масштабируйте колесиком мыши или пинчем на сенсорных экранах.<br>
+                            🎯 Кликните на пронумерованные точки для получения подробной информации о местах.
+                        </p>
+                    </div>
+                    
+                    <!-- График высот -->
+                    <div class="glassmorphism-card p-6 mb-8 reveal">
+                        <h3 class="text-2xl font-bold mb-4 gradient-text">Профиль высот</h3>
+                        <div style="height: 200px; position: relative;">
+                            <canvas id="elevationChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Ключевые точки маршрута -->
+                    <div class="glassmorphism-card p-6 reveal">
+                        <h3 class="text-2xl font-bold mb-4 gradient-text">Ключевые точки маршрута</h3>
+                        <div id="waypoints-list" class="space-y-2"></div>
                     </div>
                 </div>
             </section>
@@ -437,6 +507,44 @@
 
     <!-- Подключение Three.js для 3D графики -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- Подключение карты -->
+    <script src="map.js"></script>
+    
+    <!-- Chart.js для графиков -->
+    <script>
+        // Загрузка Chart.js с нескольких источников
+        function loadChartJS() {
+            const sources = [
+                'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js',
+                'https://unpkg.com/chart.js@4.4.0/dist/chart.umd.js',
+                'https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.js'
+            ];
+            
+            let currentIndex = 0;
+            
+            function tryNextSource() {
+                if (currentIndex >= sources.length) {
+                    console.log('Chart.js не удалось загрузить, будет использован canvas график');
+                    return;
+                }
+                
+                const script = document.createElement('script');
+                script.src = sources[currentIndex];
+                script.onload = () => console.log('Chart.js загружен успешно');
+                script.onerror = () => {
+                    console.log(`Не удалось загрузить Chart.js с ${sources[currentIndex]}`);
+                    currentIndex++;
+                    tryNextSource();
+                };
+                document.head.appendChild(script);
+            }
+            
+            tryNextSource();
+        }
+        
+        loadChartJS();
+    </script>
 
     <script>
         // Инициализация иконок
@@ -739,6 +847,233 @@
         }
 
         initThree();
+        
+        // ========== ИНТЕРАКТИВНАЯ КАРТА МАРШРУТА ==========
+        
+        // Данные о ключевых точках с изображениями
+        const pointsData = [
+            {
+                name: "Старт/Финиш: Арнеево",
+                desc: "Дом Богдана",
+                img: "https://placehold.co/600x400/1a202c/e2e8f0?text=Дом+Богдана+в+Арнеево",
+                details: "Начало и конец нашего эпического приключения. Здесь нас ждут шашлыки, сауна и холодное пиво!"
+            },
+            {
+                name: "Данки",
+                desc: "Первая остановка",
+                img: "https://placehold.co/600x400/1a202c/e2e8f0?text=Деревня+Данки",
+                details: "Живописная деревенька, где мы делаем первый привал и проверяем состояние велосипедов."
+            },
+            {
+                name: "Трасса М-2 Крым",
+                desc: "Пересечение с федеральной трассой",
+                img: "https://placehold.co/600x400/1a202c/e2e8f0?text=Трасса+М-2",
+                details: "Важный ориентир нашего маршрута - пересечение с федеральной трассой М-2 'Крым'."
+            },
+            {
+                name: "Костино",
+                desc: "Лесные тропы и подъёмы",
+                img: "https://placehold.co/600x400/1a202c/e2e8f0?text=Лесы+Костино",
+                details: "Здесь начинаются настоящие лесные приключения с красивыми тропами и захватывающими подъёмами."
+            },
+            {
+                name: "Пущинская усадьба",
+                desc: "Историческое место",
+                img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Pushino_Oka_Manor.jpg/600px-Pushino_Oka_Manor.jpg",
+                details: "Старинная усадьба с богатой историей, окружённая живописным парком. Идеальное место для фотосессии!"
+            },
+            {
+                name: "Пущинский водопад",
+                desc: "Природная достопримечательность",
+                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA4xIWHuUdjTFyf9n12y8exKwQpSuN_xu0tw&s",
+                details: "Потрясающий водопад среди леса. Прохладная вода и звуки природы - что ещё нужно для отдыха?"
+            },
+            {
+                name: "Пляж Пущино",
+                desc: "Отдых у воды",
+                img: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/11/8d/6c/79/caption.jpg?w=600&h=400&s=1",
+                details: "Финальная точка перед возвращением домой. Купание в Оке и последний отдых перед обратной дорогой."
+            }
+        ];
+        
+        // Функция для показа модального окна с информацией о точке
+        function showPointModal(pointData, index) {
+            currentLocatonTitle = pointData.name;
+            modalTitle.textContent = pointData.name;
+            modalDescription.textContent = pointData.details;
+            modalImg.src = pointData.img;
+            
+            // Сброс состояния Gemini
+            storyOutput.innerHTML = '';
+            storyOutput.classList.add('hidden');
+            generateStoryBtn.classList.remove('hidden');
+            
+            routeModal.classList.add('visible');
+        }
+        
+        // Инициализация карты с использованием внешнего модуля
+        setTimeout(() => {
+            if (typeof initInteractiveMap === 'function') {
+                const mapApi = initInteractiveMap('mapCanvas', {
+                    style: 'dark',
+                    height: 600,
+                    onPointClick: (point, index) => {
+                        // Показываем информацию о точке в модальном окне
+                        showPointModal(pointsData[index], index);
+                    }
+                });
+                
+                if (mapApi) {
+                    // Привязка кнопок управления к API карты
+                    document.getElementById('zoom-in')?.addEventListener('click', mapApi.zoomIn);
+                    document.getElementById('zoom-out')?.addEventListener('click', mapApi.zoomOut);
+                    document.getElementById('center-map')?.addEventListener('click', mapApi.center);
+                    document.getElementById('animate-route')?.addEventListener('click', mapApi.animateRoute);
+                    document.getElementById('download-map')?.addEventListener('click', mapApi.download);
+                    
+                    // Кнопка смены стиля
+                    document.getElementById('toggle-style')?.addEventListener('click', function() {
+                        const currentText = this.innerHTML;
+                        if (currentText.includes('🌙')) {
+                            mapApi.setStyle('light');
+                            this.innerHTML = '<span>☀</span> Светлая';
+                        } else if (currentText.includes('☀')) {
+                            mapApi.setStyle('terrain');
+                            this.innerHTML = '<span>🏔</span> Рельеф';
+                        } else {
+                            mapApi.setStyle('dark');
+                            this.innerHTML = '<span>🌙</span> Тёмная';
+                        }
+                    });
+                    
+                    // Кнопка переключения спутникового режима
+                    document.getElementById('toggle-satellite')?.addEventListener('click', function() {
+                        mapApi.toggleSatellite();
+                        const isEnabled = this.innerHTML.includes('🛰️');
+                        if (isEnabled) {
+                            this.innerHTML = '<span>🗺️</span> Обычная';
+                        } else {
+                            this.innerHTML = '<span>🛰️</span> Спутник';
+                        }
+                    });
+                    
+                    // Создание списка ключевых точек
+                    mapApi.createWaypointsList('waypoints-list');
+                    
+                    // Анимация счетчиков статистики
+                    const stats = mapApi.getStats();
+                    
+                    function animateValue(id, start, end, duration) {
+                        const element = document.getElementById(id);
+                        if (!element) return;
+                        const range = end - start;
+                        const increment = range / (duration / 16);
+                        let current = start;
+                        
+                        const timer = setInterval(() => {
+                            current += increment;
+                            if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                                current = end;
+                                clearInterval(timer);
+                            }
+                            element.textContent = Math.round(current * 10) / 10;
+                        }, 16);
+                    }
+                    
+                    animateValue('distance-stat', 0, stats.distance, 2000);
+                    animateValue('elevation-gain-stat', 0, stats.elevationGain, 2000);
+                    animateValue('max-elevation-stat', 0, stats.maxElevation, 2000);
+                    
+                    // График высот
+                    setTimeout(() => {
+                        const elevationCanvas = document.getElementById('elevationChart');
+                        if (elevationCanvas && typeof Chart !== 'undefined') {
+                            const elevationData = routeCoords.map((coord, index) => ({
+                                x: index * (42.3 / routeCoords.length),
+                                y: coord.ele
+                            }));
+                            
+                            const ctx2 = elevationCanvas.getContext('2d');
+                            new Chart(ctx2, {
+                                type: 'line',
+                                data: {
+                                    labels: elevationData.map(d => Math.round(d.x) + ' км'),
+                                    datasets: [{
+                                        label: 'Высота (м)',
+                                        data: elevationData.map(d => d.y),
+                                        borderColor: '#38bdf8',
+                                        backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                                        fill: true,
+                                        tension: 0.4
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: { legend: { display: false } },
+                                    scales: {
+                                        x: {
+                                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                            ticks: { color: '#94a3b8' }
+                                        },
+                                        y: {
+                                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                            ticks: { color: '#94a3b8' }
+                                        }
+                                    }
+                                }
+                            });
+                        } else if (elevationCanvas) {
+                            // Простой график на Canvas без Chart.js
+                            const ctx = elevationCanvas.getContext('2d');
+                            elevationCanvas.width = elevationCanvas.offsetWidth;
+                            elevationCanvas.height = 200;
+                            
+                            const elevations = routeCoords.map(c => c.ele);
+                            const minEle = Math.min(...elevations);
+                            const maxEle = Math.max(...elevations);
+                            const range = maxEle - minEle;
+                            
+                            ctx.fillStyle = '#1e293b';
+                            ctx.fillRect(0, 0, elevationCanvas.width, elevationCanvas.height);
+                            
+                            ctx.strokeStyle = '#38bdf8';
+                            ctx.lineWidth = 2;
+                            ctx.beginPath();
+                            
+                            elevations.forEach((ele, i) => {
+                                const x = (i / elevations.length) * elevationCanvas.width;
+                                const y = elevationCanvas.height - ((ele - minEle) / range) * (elevationCanvas.height - 40) - 20;
+                                
+                                if (i === 0) {
+                                    ctx.moveTo(x, y);
+                                } else {
+                                    ctx.lineTo(x, y);
+                                }
+                            });
+                            ctx.stroke();
+                            
+                            ctx.lineTo(elevationCanvas.width, elevationCanvas.height - 20);
+                            ctx.lineTo(0, elevationCanvas.height - 20);
+                            ctx.closePath();
+                            ctx.fillStyle = 'rgba(56, 189, 248, 0.1)';
+                            ctx.fill();
+                            
+                            ctx.fillStyle = '#94a3b8';
+                            ctx.font = '12px Arial';
+                            ctx.fillText(`${Math.round(minEle)}м`, 5, elevationCanvas.height - 5);
+                            ctx.fillText(`${Math.round(maxEle)}м`, 5, 20);
+                            ctx.fillText('0 км', 5, elevationCanvas.height - 25);
+                            ctx.fillText('42.3 км', elevationCanvas.width - 40, elevationCanvas.height - 25);
+                        }
+                    }, 1000);
+                } else {
+                    console.error('Не удалось инициализировать карту');
+                }
+            } else {
+                console.error('Модуль карты не загружен');
+            }
+        }, 200);
     </script>
 </body>
 </html>
