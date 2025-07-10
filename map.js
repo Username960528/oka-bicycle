@@ -124,14 +124,34 @@ const mapTileProviders = {
         attribution: '© OpenStreetMap contributors'
     },
     satellite: {
-        name: 'Спутник',
-        url: 'https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2020_3857/default/g/{z}/{y}/{x}.jpg',
-        attribution: '© EOX IT Services GmbH'
+        name: 'Google Спутник',
+        url: 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+        attribution: '© Google'
+    },
+    hybrid: {
+        name: 'Google Гибрид',
+        url: 'https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
+        attribution: '© Google'
     },
     terrain: {
         name: 'Рельеф',
         url: 'https://stamen-tiles-a.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png',
         attribution: '© Stamen Design, © OpenStreetMap contributors'
+    },
+    eox: {
+        name: 'EOX Спутник',
+        url: 'https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2024_3857/default/g/{z}/{y}/{x}.jpg',
+        attribution: '© EOX IT Services GmbH'
+    },
+    maxar: {
+        name: 'Maxar (30см)',
+        url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        attribution: '© Maxar, Esri'
+    },
+    sentinel: {
+        name: 'Sentinel-2 (10м)',
+        url: 'https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2024_3857/default/g/{z}/{y}/{x}.jpg',
+        attribution: '© Sentinel-2 by EOX'
     }
 };
 
@@ -246,7 +266,8 @@ function initInteractiveMap(canvasId, options = {}) {
                     continue;
                 }
                 
-                const tileUrl = mapTileProviders.satellite.url
+                const currentProvider = mapTileProviders.satellite;
+                const tileUrl = currentProvider.url
                     .replace('{z}', tileZoom)
                     .replace('{x}', x)
                     .replace('{y}', y);
@@ -589,6 +610,22 @@ function initInteractiveMap(canvasId, options = {}) {
                 mapStyle = 'dark';
             }
             drawMap();
+        },
+        setSatelliteProvider: (providerKey) => {
+            if (mapTileProviders[providerKey]) {
+                mapTileProviders.satellite = mapTileProviders[providerKey];
+                if (showSatellite) {
+                    drawMap();
+                }
+            }
+        },
+        getSatelliteProviders: () => {
+            return Object.keys(mapTileProviders).filter(key => 
+                key === 'satellite' || key === 'hybrid' || key === 'eox' || key === 'maxar' || key === 'sentinel'
+            ).map(key => ({
+                key,
+                name: mapTileProviders[key].name
+            }));
         },
         animateRoute: () => {
             let progress = 0;

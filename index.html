@@ -314,6 +314,13 @@
                             <button id="toggle-satellite" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center gap-2">
                                 <span>🛰️</span> Спутник
                             </button>
+                            <select id="satellite-provider" class="px-3 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-orange-500 transition-colors">
+                                <option value="satellite">Google Спутник</option>
+                                <option value="hybrid">Google Гибрид</option>
+                                <option value="eox">EOX Спутник</option>
+                                <option value="maxar">Maxar (30см)</option>
+                                <option value="sentinel">Sentinel-2 (10м)</option>
+                            </select>
                             <button id="animate-route" class="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors flex items-center gap-2">
                                 <span>▶</span> Анимация
                             </button>
@@ -955,6 +962,12 @@
                         } else {
                             this.innerHTML = '<span>🛰️</span> Спутник';
                         }
+                    });
+                    
+                    // Селектор провайдера спутниковых снимков
+                    document.getElementById('satellite-provider')?.addEventListener('change', function() {
+                        mapApi.setSatelliteProvider(this.value);
+                        console.log(`Переключен провайдер спутниковых снимков на: ${this.options[this.selectedIndex].text}`);
                     });
                     
                     // Создание списка ключевых точек
