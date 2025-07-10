@@ -250,7 +250,7 @@
                             </defs>
                             
                             <!-- Точки на карте -->
-                            <g class="map-point cursor-pointer" transform="translate(50, 150)" data-title="Старт и Финиш: Дом Богдана в Арнеево" data-description="Здесь начинается и заканчивается наше приключение! Утром — кофе, вечером — шашлыки, сауна и пиво. Идеальная база для героев." data-img="https://imgur.com/7Rp4Thb">
+                            <g class="map-point cursor-pointer" transform="translate(50, 150)" data-title="Старт и Финиш: Дом Богдана в Арнеево" data-description="Здесь начинается и заканчивается наше приключение! Утром — кофе, вечером — шашлыки, сауна и пиво. Идеальная база для героев." data-img="https://imgur.com/7Rp4Thb.jpg">
                                 <circle cx="0" cy="0" r="12" fill="#10b981" /><circle cx="0" cy="0" r="18" fill="#10b981" class="opacity-30 animate-ping" /><text x="-22" y="5" text-anchor="end" fill="#e2e8f0" class="font-semibold hidden sm:block">Старт/Финиш</text>
                             </g>
                              <g class="map-point cursor-pointer" transform="translate(275, 145)" data-title="Костино" data-description="Первый серьезный подъем и лесные тропы. Здесь проверяется наша выносливость и открываются первые панорамные виды." data-img="https://media.izi.travel/e07e4a31-ccfe-4a85-a39c-3bc609800ab9/d72d41c3-3f75-44dc-a866-4713ca076495_800x600.jpg">
@@ -259,7 +259,7 @@
                              <g class="map-point cursor-pointer" transform="translate(500, 88)" data-title="Пущинская Усадьба" data-description="Заглянем к старинной усадьбе Пущиных, где история витает в воздухе среди вековых деревьев." data-img="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Pushino_Oka_Manor.jpg/500px-Pushino_Oka_Manor.jpg">
                                 <circle cx="0" cy="0" r="12" fill="#7c3aed" /><text x="0" y="-25" fill="#e2e8f0" text-anchor="middle" class="font-semibold hidden sm:block">Усадьба</text>
                             </g>
-                            <g class="map-point cursor-pointer" transform="translate(680, 120)" data-title="Пущинский водопад" data-description="Скрытая жемчужина маршрута. Небольшой, но очень живописный водопад, идеальное место для фото-паузы." data-img="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Pushino_Oka_Manor.jpg/500px-Pushino_Oka_Manor.jpg">
+                            <g class="map-point cursor-pointer" transform="translate(680, 120)" data-title="Пущинский водопад" data-description="Скрытая жемчужина маршрута. Небольшой, но очень живописный водопад, идеальное место для фото-паузы." data-img="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA4xIWHuUdjTFyf9n12y8exKwQpSuN_xu0tw&s">
                                 <circle cx="0" cy="0" r="12" fill="#a78bfa" /><text x="0" y="35" fill="#e2e8f0" text-anchor="middle" class="font-semibold hidden sm:block">Водопад</text>
                             </g>
                              <g class="map-point cursor-pointer" transform="translate(875, 200)" data-title="Смотровая площадка" data-description="С карстовых обрывов открывается захватывающий дух вид на долину реки Оки. Лучшие панорамные снимки гарантированы." data-img="https://media.kupo.la/thumbor/unsafe/preset/orig/images/2018/9/11/1536655687-YcGRPwpMMsA.jpg">
@@ -314,7 +314,7 @@
                             </div>
                         </div>
                         <div class="reveal group relative overflow-hidden rounded-2xl lg:col-span-2" style="transition-delay: 0.8s;">
-                            <img src="https://imgur.com/7Rp4Thb" alt="Афтепати в Арнеево" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <img src="https://imgur.com/7Rp4Thb.jpg" alt="Афтепати в Арнеево" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
                             <div class="absolute bottom-0 left-0 p-8">
                                 <h3 class="text-3xl font-bold text-white">Дом Богдана: Афтепати</h3>
@@ -325,6 +325,22 @@
                 </div>
             </section>
             
+            <!-- НОВЫЙ РАЗДЕЛ: Подготовка к поездке -->
+            <section id="preparation" class="py-20 sm:py-32 bg-slate-900/50">
+                <div class="container mx-auto px-4 text-center">
+                    <div class="mb-16 reveal">
+                        <h2 class="text-4xl md:text-5xl font-bold montserrat-heading">Готовимся к <span class="gradient-text">Поездке</span></h2>
+                        <p class="mt-4 text-lg text-slate-400 max-w-xl mx-auto">Не уверены, что взять с собой? Позвольте ИИ помочь вам собраться!</p>
+                    </div>
+                    <div class="reveal">
+                        <button id="generate-gear-btn" class="gemini-button text-white font-bold py-3 px-8 rounded-full text-lg transform hover:scale-105 shadow-lg shadow-purple-500/20 flex items-center gap-2 mx-auto">
+                            <i data-lucide="list-checks"></i>
+                            Сгенерировать список снаряжения
+                        </button>
+                    </div>
+                </div>
+            </section>
+
             <!-- Секция: Галерея -->
             <section id="gallery" class="py-20 sm:py-32">
                 <div class="container mx-auto px-4">
@@ -405,6 +421,18 @@
             <div id="report-output" class="text-slate-300 bg-slate-800/50 p-4 rounded-lg whitespace-pre-wrap max-h-[60vh] overflow-y-auto"></div>
         </div>
     </div>
+    
+    <!-- Модальное окно для списка снаряжения -->
+    <div id="gear-modal" class="modal-overlay">
+        <div class="modal-content relative">
+            <button id="close-gear-modal" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors z-10">
+                <i data-lucide="x" class="w-8 h-8"></i>
+            </button>
+            <h3 class="text-3xl font-bold montserrat-heading gradient-text mb-4">✨ Список снаряжения</h3>
+            <div id="gear-loader" class="loader"></div>
+            <div id="gear-output" class="text-slate-300 bg-slate-800/50 p-4 rounded-lg whitespace-pre-wrap max-h-[60vh] overflow-y-auto"></div>
+        </div>
+    </div>
 
 
     <!-- Подключение Three.js для 3D графики -->
@@ -438,6 +466,10 @@
         const reportModal = document.getElementById('report-modal');
         const generateReportBtn = document.getElementById('generate-report-btn');
         const closeReportModalBtn = document.getElementById('close-report-modal');
+        
+        const gearModal = document.getElementById('gear-modal');
+        const generateGearBtn = document.getElementById('generate-gear-btn');
+        const closeGearModalBtn = document.getElementById('close-gear-modal');
 
         const modalTitle = document.getElementById('modal-title');
         const modalDescription = document.getElementById('modal-description');
@@ -480,6 +512,18 @@
         reportModal.addEventListener('click', (e) => {
             if (e.target === reportModal) closeReportModal();
         });
+        
+        const closeGearModal = () => gearModal.classList.remove('visible');
+        generateGearBtn.addEventListener('click', () => {
+            gearModal.classList.add('visible');
+            generateGearList();
+        });
+        if(closeGearModalBtn) {
+            closeGearModalBtn.addEventListener('click', closeGearModal);
+        }
+        gearModal.addEventListener('click', (e) => {
+            if (e.target === gearModal) closeGearModal();
+        });
 
 
         // --- Логика для кнопки музыки (исправленная версия) ---
@@ -487,8 +531,6 @@
         const playBtn = document.getElementById('play-music-btn');
 
         playBtn.addEventListener('click', async () => {
-            // Современные браузеры требуют, чтобы воспроизведение было инициировано
-            // пользователем. Метод play() возвращает Promise, который нужно обработать.
             try {
                 if (music.paused) {
                     await music.play();
@@ -499,9 +541,7 @@
                 }
             } catch (err) {
                 console.error('Ошибка воспроизведения аудио:', err);
-                // Можно добавить уведомление для пользователя, если нужно
             } finally {
-                // Обновляем иконки после изменения HTML кнопки
                 lucide.createIcons();
             }
         });
@@ -522,24 +562,18 @@
             const prompt = `Ты — велосипедист-путешественник с поэтической душой. Ты только что прибыл в место под названием "${currentLocatonTitle}" на берегу реки Ока. Напиши короткий, яркий и увлекательный художественный рассказ или стихотворение (на твой выбор) об этом месте и твоих ощущениях. Текст должен быть на русском языке.`;
             
             try {
-                const payload = {
-                    contents: [{ role: "user", parts: [{ text: prompt }] }]
-                };
+                const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
                 const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const result = await response.json();
                 
                 if (result.candidates && result.candidates[0].content.parts[0].text) {
-                    const text = result.candidates[0].content.parts[0].text;
-                    storyOutput.textContent = text;
+                    storyOutput.textContent = result.candidates[0].content.parts[0].text;
                 } else {
                     storyOutput.textContent = 'Не удалось получить историю от Gemini. Попробуйте еще раз.';
                 }
@@ -567,24 +601,18 @@
             const prompt = `Напиши короткий, восторженный пост для блога или социальной сети о велосипедной поездке трех друзей (Юра 'Скорость', Сергей 'Повелитель насоса', и Архитектор-кулинар) вдоль реки Ока. Их маршрут был кольцевым: они стартовали от дома Богдана в Арнеево, посетили Костино, Усадьбу Пущино, Пущинский водопад, смотровую площадку, отдохнули на пляже в Пущино и триумфально вернулись обратно в Арнеево на базу к Богдану на шашлыки, в сауну и с пивом. Обязательно опиши эпичное завершение дня, красоту природы, дух товарищества и незабываемые впечатления. Добавь несколько подходящих эмодзи и хэштегов. Текст должен быть на русском языке.`;
 
             try {
-                const payload = {
-                    contents: [{ role: "user", parts: [{ text: prompt }] }]
-                };
+                const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
                 const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const result = await response.json();
 
                 if (result.candidates && result.candidates[0].content.parts[0].text) {
-                    const text = result.candidates[0].content.parts[0].text;
-                    reportOutput.textContent = text;
+                    reportOutput.textContent = result.candidates[0].content.parts[0].text;
                 } else {
                     reportOutput.textContent = 'Не удалось создать отчет. Попробуйте еще раз.';
                 }
@@ -593,6 +621,44 @@
                 reportOutput.textContent = 'Произошла ошибка при обращении к ИИ. Пожалуйста, проверьте консоль.';
             } finally {
                 reportLoader.classList.add('hidden');
+            }
+        }
+        
+        /**
+         * ✨ Функция для генерации списка снаряжения
+         */
+        async function generateGearList() {
+            const gearLoader = document.getElementById('gear-loader');
+            const gearOutput = document.getElementById('gear-output');
+            
+            gearLoader.classList.remove('hidden');
+            gearOutput.innerHTML = '';
+            
+            const prompt = `Ты — опытный велотурист. Составь подробный и хорошо структурированный список снаряжения для однодневной велосипедной поездки трех друзей по пересеченной местности (лесные тропы, поля, берег реки). Поездка включает купание в реке и заканчивается вечером с шашлыками, сауной и пивом. Раздели список на три четкие категории: 'Личное снаряжение (для каждого)', 'Общее снаряжение (на группу)' и 'Для афтепати'. Используй Markdown для форматирования (заголовки, списки). Текст должен быть на русском языке.`;
+
+            try {
+                const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const result = await response.json();
+
+                if (result.candidates && result.candidates[0].content.parts[0].text) {
+                    // Gemini может вернуть Markdown, который нужно будет правильно отобразить.
+                    // Для простоты пока просто вставляем как текст.
+                    gearOutput.textContent = result.candidates[0].content.parts[0].text;
+                } else {
+                    gearOutput.textContent = 'Не удалось создать список. Попробуйте еще раз.';
+                }
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                gearOutput.textContent = 'Произошла ошибка при обращении к ИИ. Пожалуйста, проверьте консоль.';
+            } finally {
+                gearLoader.classList.add('hidden');
             }
         }
 
