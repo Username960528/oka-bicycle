@@ -9,3 +9,21 @@
 # OS files
 .DS_Store
 Thumbs.db
+.claude/
+# Pyre type checker
+.pyre/
+/.idea/.gitignore
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/TensorTest.iml
+/.idea/vcs.xml
+/report/output.json
+/report/pytest_html_report.html
+/report/
+/artifacts/
+/screenshot/
+/reports/
+.claude/
+CLAUDE.md

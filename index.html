@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ока-Тур: Приключение Трех Друзей с ИИ</title>
+    <title>Ока-Тур: Велосипедное Приключение</title>
     
     <!-- Подключение Tailwind CSS для стилизации -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -23,6 +23,8 @@
             background-color: #0a0a0a;
             color: #e2e8f0;
             overflow-x: hidden;
+            /* Пользовательский курсор */
+            cursor: url('endurance.cur'), auto;
         }
 
         /* Стиль для заголовков */
@@ -208,7 +210,7 @@
                     <span class="gradient-text">Ока-Тур</span>
                 </h1>
                 <p class="mt-6 text-lg md:text-xl max-w-2xl text-slate-300 reveal" style="transition-delay: 0.4s;">
-                    Эпическое велопутешествие трех друзей вдоль живописных берегов Оки с триумфальным возвращением на базу!
+                Эпическое велопутешествие вдоль живописных берегов Оки с триумфальным возвращением на базу!
                 </p>
                 <div class="mt-10 flex flex-col sm:flex-row gap-4">
                     <div class="reveal" style="transition-delay: 0.5s;">
@@ -407,7 +409,7 @@
                 <div class="container mx-auto px-4 text-center">
                     <div class="mb-16 reveal">
                         <h2 class="text-4xl md:text-5xl font-bold montserrat-heading">Готовимся к <span class="gradient-text">Поездке</span></h2>
-                        <p class="mt-4 text-lg text-slate-400 max-w-xl mx-auto">Не уверены, что взять с собой? Позвольте ИИ помочь вам собраться!</p>
+                        <p class="mt-4 text-lg text-slate-400 max-w-xl mx-auto">Не уверены, что взять с собой? Используйте наш умный помощник для подготовки!</p>
                     </div>
                     <div class="reveal">
                         <button id="generate-gear-btn" class="gemini-button text-white font-bold py-3 px-8 rounded-full text-lg transform hover:scale-105 shadow-lg shadow-purple-500/20 flex items-center gap-2 mx-auto">
@@ -690,11 +692,11 @@
                 if (result.candidates && result.candidates[0].content.parts[0].text) {
                     storyOutput.textContent = result.candidates[0].content.parts[0].text;
                 } else {
-                    storyOutput.textContent = 'Не удалось получить историю от Gemini. Попробуйте еще раз.';
+                    storyOutput.textContent = 'Не удалось создать историю. Попробуйте еще раз.';
                 }
             } catch (error) {
                 console.error("Gemini API Error:", error);
-                storyOutput.textContent = 'Произошла ошибка при обращении к ИИ. Пожалуйста, проверьте консоль.';
+                storyOutput.textContent = 'Произошла ошибка. Пожалуйста, проверьте консоль.';
             } finally {
                 storyLoader.classList.add('hidden');
                 storyOutput.classList.remove('hidden');
@@ -733,7 +735,7 @@
                 }
             } catch (error) {
                 console.error("Gemini API Error:", error);
-                reportOutput.textContent = 'Произошла ошибка при обращении к ИИ. Пожалуйста, проверьте консоль.';
+                reportOutput.textContent = 'Произошла ошибка. Пожалуйста, проверьте консоль.';
             } finally {
                 reportLoader.classList.add('hidden');
             }
@@ -771,7 +773,7 @@
                 }
             } catch (error) {
                 console.error("Gemini API Error:", error);
-                gearOutput.textContent = 'Произошла ошибка при обращении к ИИ. Пожалуйста, проверьте консоль.';
+                gearOutput.textContent = 'Произошла ошибка. Пожалуйста, проверьте консоль.';
             } finally {
                 gearLoader.classList.add('hidden');
             }
