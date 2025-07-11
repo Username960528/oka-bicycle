@@ -185,8 +185,12 @@
 </head>
 <body class="antialiased">
 
-    <!-- Аудиоплеер для фоновой музыки -->
-    <audio id="background-music" loop>
+    <!-- Аудиоплееры для фоновой музыки -->
+    <audio id="background-music-1">
+        <source src="https://files.catbox.moe/o1mq3y.mp3" type="audio/mpeg">
+        Ваш браузер не поддерживает аудиоэлементы.
+    </audio>
+    <audio id="background-music-2" loop>
         <source src="https://files.catbox.moe/rpvne7.mp3" type="audio/mpeg">
         Ваш браузер не поддерживает аудиоэлементы.
     </audio>
@@ -646,16 +650,36 @@
 
 
         // --- Логика для кнопки музыки (исправленная версия) ---
-        const music = document.getElementById('background-music');
+        const music1 = document.getElementById('background-music-1');
+        const music2 = document.getElementById('background-music-2');
+        let isPlaying = false;
+        let currentTrack = 1;
         const playBtn = document.getElementById('play-music-btn');
+
+        // Когда первый трек заканчивается, запускаем второй
+        music1.addEventListener('ended', async () => {
+            currentTrack = 2;
+            try {
+                await music2.play();
+            } catch (err) {
+                console.error('Ошибка воспроизведения второго трека:', err);
+            }
+        });
 
         playBtn.addEventListener('click', async () => {
             try {
-                if (music.paused) {
-                    await music.play();
+                if (!isPlaying) {
+                    if (currentTrack === 1) {
+                        await music1.play();
+                    } else {
+                        await music2.play();
+                    }
+                    isPlaying = true;
                     playBtn.innerHTML = '<i data-lucide="pause-circle"></i> Выключить Блюз';
                 } else {
-                    music.pause();
+                    music1.pause();
+                    music2.pause();
+                    isPlaying = false;
                     playBtn.innerHTML = '<i data-lucide="play-circle"></i> Включить Блюз';
                 }
             } catch (err) {
@@ -667,7 +691,7 @@
 
 
         // --- Gemini API ---
-        const apiKey = ""; // API-ключ будет предоставлен средой выполнения
+        const apiKey = "AIzaSyCa7ARsj81iJF5XcjlHDD3Xwmkyali1YDc"; // API-ключ Gemini
         
         /**
          * ✨ Функция для генерации истории о месте
